@@ -15,6 +15,7 @@ This is a simple Flask application that provides a weather forecast for a given 
 1. Clone this repository.
 2. Install the required Python packages: `pip install -r requirements.txt`
 3. Set the following environment variables:
+   - `IS_DEVELOPMENT`: Set to True for development mode, False for production.
    - `OPENWEATHERMAP_API_KEY`: Your OpenWeatherMap API key.
    - `OPENWEATHERMAP_URL`: The URL of the OpenWeatherMap API.
    - `MONGODB_URI`: The URI of your MongoDB database.
@@ -29,7 +30,9 @@ If you're using Docker, you can run a MongoDB container with the following comma
 ```bash
 docker pull mongo
 
-docker run --name some-mongo -p 27017:27017 -d mongo
+docker run --name mongo-db -p 27017:27017 -d mongo
+
+docker start mongo-db
 ```
 
 Then, set `MONGODB_URI` to `mongodb://localhost:27017/` or the appropriate MongoDB connection string.

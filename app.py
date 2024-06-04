@@ -8,6 +8,8 @@ app = Flask(__name__)
 
 load_dotenv()
 
+IS_DEVELOPMENT = os.environ.get('IS_DEVELOPMENT')
+
 OPENWEATHERMAP_API_KEY = os.environ.get('OPENWEATHERMAP_API_KEY')
 OPENWEATHERMAP_URL = os.environ.get('OPENWEATHERMAP_URL')
 
@@ -65,4 +67,4 @@ def get_logs():
     return jsonify(logs)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=IS_DEVELOPMENT)
