@@ -1,9 +1,12 @@
 from flask import Flask, jsonify, abort, request
+from dotenv import load_dotenv
 from pymongo import MongoClient
 import os
 import requests
 
 app = Flask(__name__)
+
+load_dotenv()
 
 OPENWEATHERMAP_API_KEY = os.environ.get('OPENWEATHERMAP_API_KEY')
 OPENWEATHERMAP_URL = os.environ.get('OPENWEATHERMAP_URL')
@@ -37,7 +40,7 @@ def get_weather():
         response = requests.get(OPENWEATHERMAP_URL, params=params)
         response.raise_for_status()
     except requests.exceptions.RequestException as e:
-        abort(500, description="Failed to get weather data.")
+        abort(500, description=f"Failed to get weather data. \n {response.text}")
 
     data = response.json()
 
