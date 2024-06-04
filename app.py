@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, abort, request
+from pymongo import MongoClient
 import os
 import requests
 
@@ -7,6 +8,11 @@ app = Flask(__name__)
 OPENWEATHERMAP_API_KEY = os.environ.get('OPENWEATHERMAP_API_KEY')
 OPENWEATHERMAP_URL = os.environ.get('OPENWEATHERMAP_URL')
 
+MONGODB_URI = os.environ.get('MONGODB_URI')
+
+client = MongoClient(MONGODB_URI)
+db = client['weather_logs']
+collection = db['logs']
 
 @app.route('/weather/', methods=['GET'])
 def get_weather():
@@ -35,8 +41,25 @@ def get_weather():
 
     data = response.json()
 
+    query = {
+        'city': city,
+        'lat': lat,
+        'lon': lon,
+        'response': data
+    }
+    collection.insert_one(query)
+
     return jsonify(data)
 
+
+@app.route('/logs/', methods=['GET'])
+def get_logs():
+    logs = list(collection.find())
+
+    for query in logs:
+        query['_id'] = str(query['_id'])
+
+    return jsonify(logs)
 
 if __name__ == '__main__':
     app.run(debug=True)

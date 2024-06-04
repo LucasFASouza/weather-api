@@ -1,50 +1,52 @@
 # Weather API
 
-This is a simple Flask application that provides weather data by interfacing with the OpenWeatherMap API.
+This is a simple Flask application that provides a weather forecast for a given city or coordinates using the OpenWeatherMap API. It also logs each use of the `/weather` endpoint in a MongoDB database and provides an endpoint to retrieve these logs.
 
-## Features
+## Endpoints
 
-- Get weather data by city name
-- Get weather data by latitude and longitude
+- `/weather/`: Returns a weather forecast for a given city or coordinates. Accepts the following query parameters:
+  - `city`: The name of the city to get the weather forecast for.
+  - `lat` and `lon`: The latitude and longitude to get the weather forecast for. Both must be provided.
+
+- `/logs/`: Returns a list of all logs, where each log is a use of the `/weather` endpoint.
 
 ## Setup
 
-1. Clone the repository
-2. Navigate to the project directory
-3. Install the required Python packages:
+1. Clone this repository.
+2. Install the required Python packages: `pip install -r requirements.txt`
+3. Set the following environment variables:
+   - `OPENWEATHERMAP_API_KEY`: Your OpenWeatherMap API key.
+   - `OPENWEATHERMAP_URL`: The URL of the OpenWeatherMap API.
+   - `MONGODB_URI`: The URI of your MongoDB database.
+4. Run the application: `python app.py`
+
+Typically, the OpenWeatherMap API URL is https://api.openweathermap.org/data/2.5/forecast, which provides weather forecasts in 3-hour intervals for the upcoming 15 hours. However, if you need to access the daily forecast for the next 5 days, you should use the URL https://api.openweathermap.org/data/2.5/forecast/daily. In that case, please ensure that your API key has the appropriate permissions to access this endpoint.
+
+## Docker
+
+If you're using Docker, you can run a MongoDB container with the following command:
+
+```bash
+docker pull mongo
+
+docker run --name some-mongo -p 27017:27017 -d mongo
 ```
-pip install -r requirements.txt
-```
-4. Set the necessary environment variables:
-```
-OPENWEATHERMAP_API_KEY={your openweather api key}
-OPENWEATHERMAP_URL=http://api.openweathermap.org/data/2.5/weather
-```
-For the daily forecast of the next 5 days, it is necessary to add `/daily` to the URL and provide an appropriate API key. Otherwise, the API will return the forecast in 3-hour intervals for the next 15 hours.
+
+Then, set `MONGODB_URI` to `mongodb://localhost:27017/` or the appropriate MongoDB connection string.
 
 ## Usage
 
-Start the Flask application:
+To get the weather forecast for a city:
+```bash
+curl "http://localhost:5000/weather/?city=Sao%20Paulo"
 ```
-python app.py
+
+To get the weather forecast for a set of coordinates:
+```bash
+curl "http://localhost:5000/weather/?lat=-23.5475&lon=-46.6361"
 ```
 
-The application will start running at http://127.0.0.1:5000.
-
-To get weather data, make a GET request to the /weather endpoint with either a city parameter or lat and lon parameters.
-
-Example:
-
-- By city name: http://127.0.0.1:5000/weather?city=London
-- By latitude and longitude: http://127.0.0.1:5000/weather?lat=51.51&lon=-0.13
-
-## Error Handling
-
-The API will return the following error responses:
-
-- 400 Bad Request if neither city nor lat and lon parameters are provided.
-- 500 Internal Server Error if there was an error retrieving the weather data.
-
-## License
-
-This project is licensed under the terms of the MIT license.
+To get the logs:
+```bash
+curl "http://localhost:5000/logs/"
+```
