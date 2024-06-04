@@ -20,6 +20,7 @@ pip install -r requirements.txt
 OPENWEATHERMAP_API_KEY={your openweather api key}
 OPENWEATHERMAP_URL=http://api.openweathermap.org/data/2.5/weather
 ```
+For the daily forecast of the next 5 days, it is necessary to add `/daily` to the URL and provide an appropriate API key. Otherwise, the API will return the forecast in 3-hour intervals for the next 15 hours.
 
 ## Usage
 
